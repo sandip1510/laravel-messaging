@@ -1,2 +1,1 @@
-# laravel-messaging
-Laravel Messaging App
+# laravel-auth
