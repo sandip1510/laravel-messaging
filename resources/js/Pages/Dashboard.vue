@@ -19,8 +19,8 @@
           <div v-if="messages.length == 0">No messages yet</div>
           <div v-else>
               <div v-for="msg in messages" :key="msg.id"
-                   :class="{'sent': msg.sender_id == authUser, 'received': msg.sender_id != authUser}">
-                  <strong v-if="msg.sender_id == authUser">You:</strong>
+                   :class="{'sent': msg.sender_id == authUser.id, 'received': msg.sender_id != authUser.id}">
+                  <strong v-if="msg.sender_id == authUser.id">You:</strong>
                   <strong v-else>{{ selectedUser.name }}:</strong>
                   {{ msg.message }}
               </div>
@@ -55,11 +55,13 @@ export default {
 
     async authUser() {
           try {
-              const response = await axios.get('/api/authUser', {
-                  headers: { Authorization: `Bearer ${localStorage.getItem('token')}` }
-              });
-            //   console.log("response - authUser");
-            //   console.log(response);
+
+            // 
+            const response = await axios.get("/api/authUser", {
+          withCredentials: true, // ✅ Sends HTTP-only cookies for authentication
+        });
+              console.log("response - authUser");
+              console.log(response);
               
               
               this.authUser = response.data;            
@@ -72,7 +74,7 @@ export default {
       async fetchUsers() {
           try {
               const response = await axios.get('/api/users', {
-                  headers: { Authorization: `Bearer ${localStorage.getItem('token')}` }
+                withCredentials: true, // ✅ Ensures cookies are sent
               });
               this.users = response.data;            
           } catch (error) {

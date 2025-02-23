@@ -3,18 +3,13 @@ import App from './App.vue';
 import router from './router';
 import axios from 'axios';
 
+const app = createApp(App);
 
-// Set default Axios base URL
-axios.defaults.baseURL = 'http://127.0.0.1:8000';
-
-// Load token from local storage if available
+// ✅ Check for stored token & set global auth header
 const token = localStorage.getItem('token');
 if (token) {
   axios.defaults.headers.common['Authorization'] = `Bearer ${token}`;
 }
 
-const app = createApp(App);
 app.use(router);
 app.mount('#app');
-
-
