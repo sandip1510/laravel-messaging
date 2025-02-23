@@ -29,6 +29,8 @@ Route::middleware('auth:sanctum')->group(function () {
 
     // Fetch Users
     Route::get('/users', [UserController::class, 'index']);
+
+    Route::get('/authUser', [UserController::class, 'authUser']);
 });
 
 

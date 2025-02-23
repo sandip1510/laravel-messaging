@@ -16,11 +16,11 @@
       <div v-if="selectedUser" class="chat-box">
           <h3>Chat with {{ selectedUser.name }}</h3>
           
-          <div v-if="messages.length === 0">No messages yet</div>
+          <div v-if="messages.length == 0">No messages yet</div>
           <div v-else>
               <div v-for="msg in messages" :key="msg.id"
-                   :class="{'sent': msg.sender_id === authUserId, 'received': msg.sender_id !== authUserId}">
-                  <strong v-if="msg.sender_id === authUserId">You:</strong>
+                   :class="{'sent': msg.sender_id == authUser, 'received': msg.sender_id != authUser}">
+                  <strong v-if="msg.sender_id == authUser">You:</strong>
                   <strong v-else>{{ selectedUser.name }}:</strong>
                   {{ msg.message }}
               </div>
@@ -44,18 +44,37 @@ export default {
           messages: [],
           newMessage: "",
           selectedUser: null, // The user who is clicked
+        //   authUser:null,
       };
   },
   mounted() {
+    this.authUser();
       this.fetchUsers();
   },
-  methods: {
+  methods: {  
+
+    async authUser() {
+          try {
+              const response = await axios.get('/api/authUser', {
+                  headers: { Authorization: `Bearer ${localStorage.getItem('token')}` }
+              });
+            //   console.log("response - authUser");
+            //   console.log(response);
+              
+              
+              this.authUser = response.data;            
+          } catch (error) {
+              console.error("Error fetching users:", error);
+          }
+      },
+
+
       async fetchUsers() {
           try {
               const response = await axios.get('/api/users', {
                   headers: { Authorization: `Bearer ${localStorage.getItem('token')}` }
               });
-              this.users = response.data;
+              this.users = response.data;            
           } catch (error) {
               console.error("Error fetching users:", error);
           }
@@ -66,7 +85,7 @@ export default {
           try {
               const response = await axios.get(`/api/messages/${this.selectedUser.id}`, {
                   headers: { Authorization: `Bearer ${localStorage.getItem('token')}` }
-              });
+              });            
               this.messages = response.data;
           } catch (error) {
               console.error("Error fetching messages:", error);
@@ -126,13 +145,13 @@ export default {
 }
 .sent {
   text-align: right;
-  background-color: #e1ffc7;
+  background-color: #94f342;
   padding: 5px;
   margin: 5px;
 }
 .received {
   text-align: left;
-  background-color: #f1f1f1;
+  background-color: #4896ee;
   padding: 5px;
   margin: 5px;
 }
